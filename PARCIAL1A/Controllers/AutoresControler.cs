@@ -109,28 +109,33 @@ namespace PARCIAL1A.Controllers
             return Ok(autores);
         }
 
-       
+
         [HttpGet]
-        [Route("Find/{filtro}")]
-        public IActionResult FindByDescription(string filtro)
+        [Route("Find/{nombreAutor}")]
+        public IActionResult FindByAuthor(string nombreAutor)
         {
-            Autores? autores = (from a in _parcial1AContext.Autores join p in _parcial1AContext.Post
-                                on a.Id equals AutorId 
-                               where a.Nombre.Contains(filtro)
-                               select 
-                               {
+            var posts = (from p in _parcial1AContext.Post
+                         join a in _parcial1AContext.Autores on p.AutorId equals a.Id
+                         where a.Nombre == nombreAutor
+                         orderby p.FechaPublicacion descending
+                         select new
+                         {
+                             p.Titulo,
+                             p.Contenido,
+                             p.FechaPublicacion,
+                             Autor = a.Nombre
+                         }
+                        ).Take(20).ToList();
 
-                               }
-                               ).FirstOrDefault();
-
-            if (autores == null)
+            if (posts.Count == 0)
             {
                 return NotFound();
             }
-            return Ok(autores);
+
+            return Ok(posts);
         }
 
-        
+
         [HttpPost]
         [Route("Add")]
         public IActionResult GuardarEquipo([FromBody] Autores autores)
