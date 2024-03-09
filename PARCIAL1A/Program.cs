@@ -7,8 +7,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddDbContext<Parcial1AContext>(options => options.UseSqlServer
-(builder.Configuration.GetConnectionString("parcial1ADbConnection"))
+//Inyección por dependencia del string de conexion al contexto
+builder.Services.AddDbContext<Parcial1AContext>(options => 
+        options.UseSqlServer(
+            builder.Configuration.GetConnectionString("PARCIAL1ADbConnection")
+            )
 );
 
 builder.Services.AddEndpointsApiExplorer();
