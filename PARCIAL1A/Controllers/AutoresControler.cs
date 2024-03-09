@@ -22,12 +22,12 @@ namespace PARCIAL1A.Controllers
         }
 
         /// <sumary>
-        /// EndPointRetorna listado de los Autores exisentes
+        /// EndPointRetorna listado de los Autorlibro exisentes
         /// </sumary>
         /// <returns></returns>
         [HttpGet]
-        [Route("GetAll")]
-        public IActionResult Get()
+        [Route("GetAllAutorlibro")]
+        public IActionResult GetAutorlibro()
         {
             List<Autorlibro> listadoAutorlibro = (from a in _parcial1AContext.Autorlibro
                                             select a).ToList();
@@ -39,13 +39,17 @@ namespace PARCIAL1A.Controllers
             return Ok(listadoAutorlibro);
         }
 
+
+        /// <sumary>
+        /// EndPointRetorna listado de los Autorlibro exisentes
+        /// </sumary>
+        /// <returns></returns>
         [HttpGet]
-        [Route("GetAll")]
-        public IActionResult Get()
+        [Route("GetAllAutores")]
+        public IActionResult GetAutores()
         {
-            var listadoAutores = (from a in _parcial1AContext.Autores
-                                  select a).ToList();
-                                
+            List<Autores> listadoAutores = (from a in _parcial1AContext.Autores
+                                                  select a).ToList();
 
             if (listadoAutores.Count() == 0)
             {
@@ -54,7 +58,7 @@ namespace PARCIAL1A.Controllers
             return Ok(listadoAutores);
         }
 
-      
+
         [HttpGet]
         [Route("GetById/{id}")]
         public IActionResult Get(int id)
