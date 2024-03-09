@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 
 using Microsoft.AspNetCore.Mvc;
 using static PARCIAL1A.Models.Parcial1AContext;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using System.Linq;
 
 namespace PARCIAL1A.Controllers
 {
@@ -19,7 +21,24 @@ namespace PARCIAL1A.Controllers
 
         }
 
-        
+        /// <sumary>
+        /// EndPointRetorna listado de los Autores exisentes
+        /// </sumary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("GetAll")]
+        public IActionResult Get()
+        {
+            List<Autorlibro> listadoAutorlibro = (from a in _parcial1AContext.Autorlibro
+                                            select a).ToList();
+            
+            if (listadoAutorlibro.Count() == 0)
+            {
+                return NotFound();
+            }
+            return Ok(listadoAutorlibro);
+        }
+
         [HttpGet]
         [Route("GetAll")]
         public IActionResult Get()
