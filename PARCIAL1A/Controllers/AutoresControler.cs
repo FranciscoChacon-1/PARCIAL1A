@@ -28,15 +28,76 @@ namespace PARCIAL1A.Controllers
         [Route("GetAllAutorlibro")]
         public IActionResult GetAutorlibro()
         {
-            List<Autorlibro> listadoAutorlibro = (from a in _parcial1AContext.Autorlibro
-                                            select a).ToList();
+            List<Autorlibro> listadoAutorlibro = (from au in _parcial1AContext.Autorlibro
+                                            select au).ToList();
             
             if (listadoAutorlibro.Count() == 0)
             {
                 return NotFound();
             }
             return Ok(listadoAutorlibro);
+
         }
+
+
+
+        [HttpPost]
+        [Route("AddAutorlibro")]
+        public IActionResult GuardarEquipo([FromBody] Autorlibro autorlibro)
+        {
+            try
+            {
+                _parcial1AContext.Autorlibro.Add(autorlibro);
+                _parcial1AContext.SaveChanges();
+                return Ok(autorlibro);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("actualizar autorlibro/{id}")]
+        public IActionResult Actualizarautorlibro(int id, [FromBody] Autorlibro autoreslibroModificar)
+        {
+            //Para actualizar un registro, se obtiene el registro original de la base de datos
+            //al cual alteraremos alguna propiedad
+            Autores? AutoreslibroActual = (from au in _parcial1AContext.Autores
+                                      where au.AutorId == id 
+                                      select au).FirstOrDefault();
+            //Verificamos que exista el registro segun su ID
+            if (AutoreslibroActual == null)
+            { return NotFound(); }
+            //Si se encuentra el registro, se alteran los campos modificables
+            AutoreslibroActual.Orden = autoreslibroModificar.Orden;
+
+
+            //Se marca el registro como modificado en el contexto //y se envia la modificacion a la base de datos
+            _parcial1AContext.Entry(AutoresActual).State = EntityState.Modified;
+            _parcial1AContext.SaveChanges();
+            return Ok(autoresModificar);
+
+        }
+
+        [HttpDelete]
+        [Route("eliminaraurolibro/{id}")]
+        public IActionResult Eliminarautorlibro(int id)
+        {
+            //Para actualizar un registro, se obtiene el registro original de la base de datos
+            //al cual eliminaremos
+            Autores? autores = (from e in _parcial1AContext.Autores
+                                where e.AutorId == id
+                                select e).FirstOrDefault();
+            //Verificamos que exista el registro segun su ID
+            if (autores == null)
+                return NotFound();
+            //Ejecutamos la accion de elminar el registro _equiposContexto.equipos.Attach(equipo);
+            _parcial1AContext.Autores.Remove(autores);
+            _parcial1AContext.SaveChanges();
+            return Ok(autores);
+        }
+
 
 
         /// <sumary>
@@ -214,7 +275,7 @@ namespace PARCIAL1A.Controllers
 
         [HttpGet]
         [Route("GetById/{id}")]
-        public IActionResult Get(int id)
+        public IActionResult Getautores(int id)
         {
             Autores? autores = (from a in _parcial1AContext.Autores
                                where a.Id == id
@@ -256,7 +317,7 @@ namespace PARCIAL1A.Controllers
 
         [HttpPost]
         [Route("Add")]
-        public IActionResult GuardarEquipo([FromBody] Autores autores)
+        public IActionResult Guardarautor([FromBody] Autores autores)
         {
             try
             {
@@ -272,7 +333,7 @@ namespace PARCIAL1A.Controllers
 
         [HttpPut]
         [Route("actualizar/{id}")]
-        public IActionResult ActualizarEquipo(int id, [FromBody] Autores autoresModificar)
+        public IActionResult Actualizarautor(int id, [FromBody] Autores autoresModificar)
         {
             //Para actualizar un registro, se obtiene el registro original de la base de datos
             //al cual alteraremos alguna propiedad
@@ -296,7 +357,7 @@ namespace PARCIAL1A.Controllers
         [HttpDelete]
         [Route("eliminar/{id}")]
 
-        public IActionResult EliminarEquipo(int id)
+        public IActionResult Eliminarautor(int id)
         {
             //Para actualizar un registro, se obtiene el registro original de la base de datos
             //al cual eliminaremos
