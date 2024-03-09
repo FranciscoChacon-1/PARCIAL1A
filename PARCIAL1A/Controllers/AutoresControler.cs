@@ -45,11 +45,47 @@ namespace PARCIAL1A.Controllers
         /// </sumary>
         /// <returns></returns>
         [HttpGet]
+        [Route("GetAllPosts")]
+        public IActionResult GetPosts()
+        {
+            List<Posts> listadoPosts = (from a in _parcial1AContext.Posts
+                                                  select a).ToList();
+
+            if (listadoPosts.Count() == 0)
+            {
+                return NotFound();
+            }
+            return Ok(listadoPosts);
+        }
+
+        /// <sumary>
+        /// EndPointRetorna listado de los Autorlibro exisentes
+        /// </sumary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("GetAllLibros")]
+        public IActionResult GetLibros()
+        {
+            List<Libros> listadoLibros = (from a in _parcial1AContext.Libros
+                                            select a).ToList();
+
+            if (listadoLibros.Count() == 0)
+            {
+                return NotFound();
+            }
+            return Ok(listadoLibros);
+        }
+
+        /// <sumary>
+        /// EndPointRetorna listado de los Autorlibro exisentes
+        /// </sumary>
+        /// <returns></returns>
+        [HttpGet]
         [Route("GetAllAutores")]
         public IActionResult GetAutores()
         {
             List<Autores> listadoAutores = (from a in _parcial1AContext.Autores
-                                                  select a).ToList();
+                                            select a).ToList();
 
             if (listadoAutores.Count() == 0)
             {
@@ -57,7 +93,6 @@ namespace PARCIAL1A.Controllers
             }
             return Ok(listadoAutores);
         }
-
 
         [HttpGet]
         [Route("GetById/{id}")]
