@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using PARCIAL1A.Models;
 using Microsoft.EntityFrameworkCore;
 
-using Microsoft.AspNetCore.Mvc;
 using static PARCIAL1A.Models.Parcial1AContext;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using System.Linq;
