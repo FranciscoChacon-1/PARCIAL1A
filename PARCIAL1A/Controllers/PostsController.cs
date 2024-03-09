@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PARCIAL1A.Models;
 
@@ -90,5 +89,47 @@ namespace PARCIAL1A.Controllers
             _parcial1AContext.SaveChanges();
             return Ok(Posts);
         }
+
+        [HttpGet]
+        [Route("GetPostsporAutor")]
+        public IActionResult GetPosrsporAutor(string Autornombre)
+        {
+            var posts = (from p in _parcial1AContext.Posts
+                         join a in _parcial1AContext.Autores on p.AutorId equals a.Id
+                         where a.Nombre == Autornombre
+                         orderby p.FechaPublicacion descending
+                         select p).Take(20).ToList();
+
+            if (posts.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return Ok(posts);
+        }
+
+        [HttpGet]
+        [Route("GetPostsporLibro")]
+        public IActionResult GetPostsporLibro()
+        {
+            var PostsporLibro = (from p in _parcial1AContext.Posts
+                                 join l in _parcial1AContext.Libros on p.Id equals l.Id
+                                 orderby l.Titulo
+                                 group p by new { l.Id, l.Titulo } into pass
+                                 select new
+                                 {
+                                     LibroId = pass.Key.Id,
+                                     Titulo = pass.Key.Titulo,
+                                     Posts = pass.ToList()
+                                 }).ToList();
+
+            if (PostsporLibro.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return Ok(PostsporLibro);
+        }
     }
 }
+   

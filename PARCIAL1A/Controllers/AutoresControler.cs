@@ -56,31 +56,6 @@ namespace PARCIAL1A.Controllers
         }
 
 
-        [HttpGet]
-        [Route("Find/{nombreAutor}")]
-        public IActionResult FindByAuthor(string nombreAutor)
-        {
-            var posts = (from p in _parcial1AContext.Posts
-                         join a in _parcial1AContext.Autores on p.AutorId equals a.Id
-                         where a.Nombre == nombreAutor
-                         orderby p.FechaPublicacion descending
-                         select new
-                         {
-                             p.Titulo,
-                             p.Contenido,
-                             p.FechaPublicacion,
-                             Autor = a.Nombre
-                         }
-                        ).Take(20).ToList();
-
-            if (posts.Count == 0)
-            {
-                return NotFound();
-            }
-
-            return Ok(posts);
-        }
-
 
         [HttpPost]
         [Route("Add")]
