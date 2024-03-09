@@ -114,9 +114,14 @@ namespace PARCIAL1A.Controllers
         [Route("Find/{filtro}")]
         public IActionResult FindByDescription(string filtro)
         {
-            Autores? autores = (from a in _parcial1AContext.Autores
+            Autores? autores = (from a in _parcial1AContext.Autores join p in _parcial1AContext.Post
+                                on a.Id equals AutorId 
                                where a.Nombre.Contains(filtro)
-                               select a).FirstOrDefault();
+                               select 
+                               {
+
+                               }
+                               ).FirstOrDefault();
 
             if (autores == null)
             {
