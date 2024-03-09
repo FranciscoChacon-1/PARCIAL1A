@@ -57,6 +57,63 @@ namespace PARCIAL1A.Controllers
             return Ok(listadoPosts);
         }
 
+        [HttpPost]
+        [Route("AddPosts")]
+        public IActionResult GuardarPosts([FromBody] Posts Posts)
+        {
+            try
+            {
+                _parcial1AContext.Posts.Add(Posts);
+                _parcial1AContext.SaveChanges();
+                return Ok(Posts);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPut]
+        [Route("actualizarPosts/{id}")]
+        public IActionResult ActualizarPosts(int id, [FromBody] Posts PostsModificar)
+        {
+
+            Posts? PostsActual = (from e in _parcial1AContext.Posts
+                                    where e.Id == id
+                                    select e).FirstOrDefault();
+            //Verificamos que exista el registro segun su ID
+            if (PostsActual == null)
+            { return NotFound(); }
+            //Si se encuentra el registro, se alteran los campos modificables
+            PostsActual.Id = PostsModificar.Id;
+            PostsActual.Titulo = PostsModificar.Titulo;
+            PostsActual.Contenido = PostsModificar.Contenido;
+            PostsActual.FechaPublicacion = PostsModificar.FechaPublicacion;
+            //Se marca el registro como modificado en el contexto //y se envia la modificacion a la base de datos
+            _parcial1AContext.Entry(PostsActual).State = EntityState.Modified;
+            _parcial1AContext.SaveChanges();
+            return Ok(PostsModificar);
+
+        }
+
+        [HttpDelete]
+        [Route("eliminarPosts/{id}")]
+
+        public IActionResult EliminarPosts(int id)
+        {
+            //Para actualizar un registro, se obtiene el registro original de la base de datos
+            //al cual eliminaremos
+            Posts? Posts = (from e in _parcial1AContext.Posts
+                              where e.Id == id
+                              select e).FirstOrDefault();
+            //Verificamos que exista el registro segun su ID
+            if (Posts == null)
+                return NotFound();
+            //Ejecutamos la accion de elminar el registro _equiposContexto.equipos.Attach(equipo);
+            _parcial1AContext.Posts.Remove(Posts);
+            _parcial1AContext.SaveChanges();
+            return Ok(Posts);
+        }
+
         /// <sumary>
         /// EndPointRetorna listado de los Autorlibro exisentes
         /// </sumary>
@@ -76,6 +133,66 @@ namespace PARCIAL1A.Controllers
         }
 
         /// <sumary>
+        /// EndPoint que retorna el listado de todos los equipos existentes
+        /// </sumary>
+        /// <param name="id"></param>>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("AddLibros")]
+        public IActionResult GuardarLibros([FromBody] Libros Libros)
+        {
+            try
+            {
+                _parcial1AContext.Libros.Add(Libros);
+                _parcial1AContext.SaveChanges();
+                return Ok(Libros);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPut]
+        [Route("actualizarLibros/{id}")]
+        public IActionResult ActualizarLibros(int id, [FromBody] Libros LibrosModificar)
+        {
+
+            Libros? LibrosActual = (from e in _parcial1AContext.Libros
+                                     where e.Id == id
+                                     select e).FirstOrDefault();
+            //Verificamos que exista el registro segun su ID
+            if (LibrosActual == null)
+            { return NotFound(); }
+            //Si se encuentra el registro, se alteran los campos modificables
+            LibrosActual.Id = LibrosModificar.Id;
+            LibrosActual.Titulo = LibrosModificar.Titulo;
+            //Se marca el registro como modificado en el contexto //y se envia la modificacion a la base de datos
+            _parcial1AContext.Entry(LibrosActual).State = EntityState.Modified;
+            _parcial1AContext.SaveChanges();
+            return Ok(LibrosModificar);
+
+        }
+
+        [HttpDelete]
+        [Route("eliminarLibro/{id}")]
+
+        public IActionResult EliminarLibro(int id)
+        {
+            //Para actualizar un registro, se obtiene el registro original de la base de datos
+            //al cual eliminaremos
+            Libros? Libros = (from e in _parcial1AContext.Libros
+                               where e.Id == id
+                               select e).FirstOrDefault();
+            //Verificamos que exista el registro segun su ID
+            if (Libros == null)
+                return NotFound();
+            //Ejecutamos la accion de elminar el registro _equiposContexto.equipos.Attach(equipo);
+            _parcial1AContext.Libros.Remove(Libros);
+            _parcial1AContext.SaveChanges();
+            return Ok(Libros);
+        }
+
+        /// <sumary>
         /// EndPointRetorna listado de los Autorlibro exisentes
         /// </sumary>
         /// <returns></returns>
@@ -92,6 +209,8 @@ namespace PARCIAL1A.Controllers
             }
             return Ok(listadoAutores);
         }
+
+
 
         [HttpGet]
         [Route("GetById/{id}")]
@@ -113,7 +232,7 @@ namespace PARCIAL1A.Controllers
         [Route("Find/{nombreAutor}")]
         public IActionResult FindByAuthor(string nombreAutor)
         {
-            var posts = (from p in _parcial1AContext.Post
+            var posts = (from p in _parcial1AContext.Posts
                          join a in _parcial1AContext.Autores on p.AutorId equals a.Id
                          where a.Nombre == nombreAutor
                          orderby p.FechaPublicacion descending
