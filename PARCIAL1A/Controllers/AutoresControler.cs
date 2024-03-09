@@ -63,7 +63,7 @@ namespace PARCIAL1A.Controllers
         {
             //Para actualizar un registro, se obtiene el registro original de la base de datos
             //al cual alteraremos alguna propiedad
-            Autores? AutoreslibroActual = (from au in _parcial1AContext.Autores
+            Autores? AutoreslibroActual = (from au in _parcial1AContext.Autorlibro
                                       where au.AutorId == id 
                                       select au).FirstOrDefault();
             //Verificamos que exista el registro segun su ID
@@ -86,7 +86,7 @@ namespace PARCIAL1A.Controllers
         {
             //Para actualizar un registro, se obtiene el registro original de la base de datos
             //al cual eliminaremos
-            Autores? autores = (from e in _parcial1AContext.Autores
+            Autores? autores = (from e in _parcial1AContext.Autorlibro
                                 where e.AutorId == id
                                 select e).FirstOrDefault();
             //Verificamos que exista el registro segun su ID
@@ -183,14 +183,47 @@ namespace PARCIAL1A.Controllers
         [Route("GetAllLibros")]
         public IActionResult GetLibros()
         {
-            List<Libros> listadoLibros = (from a in _parcial1AContext.Libros
-                                            select a).ToList();
+            List<Libros> listadoLibros = (from l in _parcial1AContext.Libros
+                                            select l).ToList();
 
             if (listadoLibros.Count() == 0)
             {
                 return NotFound();
             }
             return Ok(listadoLibros);
+        }
+
+        [HttpGet]
+        [Route("GetByIdlibros/{id}")]
+        public IActionResult Getlibros(int id)
+        {
+            Autores? autores = (from l in _parcial1AContext.Libros
+                                where l.Id == id
+                                select l).FirstOrDefault();
+
+            if (autores == null)
+            {
+                return NotFound();
+            }
+            return Ok(autores);
+        }
+         /// proba este meto que e sel de busacar un libro mediante el nombre del auotr mira si te funciona
+        HttpGet]
+        [Route("Find/{nombreAutor}")]
+        public IActionResult FindByAuthor(string nombreAutor)
+        {
+            var libros = (from l in _parcial1AContext.Libro
+                          join al in _parcial1AContext.AutorLibro on l.Id equals al.LibroId
+                          join a in _parcial1AContext.Autores on al.AutorId equals a.Id
+                          where a.Nombre == nombreAutor
+                          select l).ToList();
+
+            if (libros.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return Ok(libros);
         }
 
         /// <sumary>
